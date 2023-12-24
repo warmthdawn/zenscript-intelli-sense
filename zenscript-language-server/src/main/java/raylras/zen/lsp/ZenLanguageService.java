@@ -6,6 +6,8 @@ import org.eclipse.lsp4j.services.TextDocumentService;
 import org.eclipse.lsp4j.services.WorkspaceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import raylras.zen.lsp.diagonsitc.Diagnostics;
+import raylras.zen.lsp.diagonsitc.SyntaxDiagnostic;
 import raylras.zen.lsp.provider.*;
 import raylras.zen.model.CompilationEnvironment;
 import raylras.zen.model.CompilationUnit;
@@ -62,7 +64,9 @@ public class ZenLanguageService implements TextDocumentService, WorkspaceService
                 LogMessages.start("didChange", path, logger);
                 CompilationUnit unit = getUnit(path).orElseThrow();
                 String source = params.getContentChanges().get(0).getText();
+                Diagnostics.clear(unit);
                 Compilations.load(unit, source);
+                Diagnostics.checkSyntax(unit, ZenLanguageServer.getClient());
                 LogMessages.finish("didChange", path, logger);
             } finally {
                 unlockForWrite();
@@ -218,6 +222,16 @@ public class ZenLanguageService implements TextDocumentService, WorkspaceService
         });
     }
 
+    @Override
+    public CompletableFuture<WorkspaceDiagnosticReport> diagnostic(WorkspaceDiagnosticParams params) {
+        return WorkspaceService.super.diagnostic(params);
+    }
+
+    @Override
+    public CompletableFuture<DocumentDiagnosticReport> diagnostic(DocumentDiagnosticParams params) {
+        return TextDocumentService.super.diagnostic(params);
+    }
+
     /* End Text Document Service */
 
     /* Workspace Service */
@@ -239,10 +253,13 @@ public class ZenLanguageService implements TextDocumentService, WorkspaceService
                             case Created -> {
                                 CompilationUnit unit = env.createUnit(path);
                                 Compilations.load(unit);
+                                Diagnostics.checkSyntax(unit, ZenLanguageServer.getClient());
                             }
                             case Changed -> {
                                 CompilationUnit unit = env.getUnit(path);
+                                Diagnostics.clear(unit);
                                 Compilations.load(unit);
+                                Diagnostics.checkSyntax(unit, ZenLanguageServer.getClient());
                             }
                             case Deleted -> env.removeUnit(path);
                         }
@@ -267,6 +284,7 @@ public class ZenLanguageService implements TextDocumentService, WorkspaceService
         Path compilationRoot = PathUtil.findUpwardsOrSelf(documentPath, CompilationEnvironment.DEFAULT_ROOT_DIRECTORY);
         CompilationEnvironment env = new CompilationEnvironment(compilationRoot);
         Compilations.load(env);
+        Diagnostics.checkSyntax(env, ZenLanguageServer.getClient());
         environments.add(env);
         checkDzs(env);
     }

@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "atomic": "c",
+        "cstdlib": "c",
+        "format": "c",
+        "locale": "c",
+        "memory": "c",
+        "xlocale": "c",
+        "xlocinfo": "c",
+        "xlocmon": "c",
+        "xlocnum": "c",
+        "xloctime": "c",
+        "xmemory": "c"
+    }
+}

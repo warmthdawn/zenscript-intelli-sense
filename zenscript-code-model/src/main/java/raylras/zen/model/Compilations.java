@@ -1,5 +1,8 @@
 package raylras.zen.model;
 
+import ai.serenade.treesitter.Languages;
+import ai.serenade.treesitter.Parser;
+import ai.serenade.treesitter.Tree;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
@@ -11,11 +14,14 @@ import raylras.zen.model.scope.Scope;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class Compilations {
@@ -70,6 +76,7 @@ public class Compilations {
     public static void load(CompilationUnit unit) {
         try {
             load(unit, CharStreams.fromPath(unit.getPath()));
+            unit.setTsParseTree(parser.parseString(Files.readString(unit.getPath())));
         } catch (IOException e) {
             throw new RuntimeException("Failed to load unit: " + unit, e);
         }
@@ -77,28 +84,48 @@ public class Compilations {
 
     public static void load(CompilationUnit unit, String source) {
         load(unit, CharStreams.fromString(source, unit.getPath().toString()));
+
+        try {
+            unit.setTsParseTree(parser.parseString(source));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Failed to parse ts tree unit: " + unit, e);
+        }
     }
 
     /* Private Methods */
 
+    private static Parser parser;
+    static {
+        parser = new Parser();
+        parser.setLanguage(Languages.zenscript());
+
+        System.loadLibrary("tree-sitter-zenscript");
+    }
+
     private static void load(CompilationUnit unit, CharStream charStream) {
         unit.clear();
-        CommonTokenStream tokenStream = lex(charStream);
-        ParseTree parseTree = parse(tokenStream);
+        CommonTokenStream tokenStream = lex(charStream, unit.getErrorListener());
+        ParseTree parseTree = parse(tokenStream, unit.getErrorListener());
         unit.setTokenStream(tokenStream);
         unit.setParseTree(parseTree);
         DeclarationResolver.resolveDeclarations(unit);
     }
 
-    private static CommonTokenStream lex(CharStream charStream) {
+    private static CommonTokenStream lex(CharStream charStream, ANTLRErrorListener errorListener) {
         ZenScriptLexer lexer = new ZenScriptLexer(charStream);
         lexer.removeErrorListeners();
+        if(errorListener != null) {
+            lexer.addErrorListener(errorListener);
+        }
         return new CommonTokenStream(lexer);
     }
 
-    private static ParseTree parse(TokenStream tokenStream) {
+    private static ParseTree parse(TokenStream tokenStream, ANTLRErrorListener errorListener) {
         ZenScriptParser parser = new ZenScriptParser(tokenStream);
         parser.removeErrorListeners();
+        if(errorListener != null) {
+            parser.addErrorListener(errorListener);
+        }
         // faster but less robust strategy, effective when no syntax errors
         parser.getInterpreter().setPredictionMode(PredictionMode.SLL);
         parser.setErrorHandler(new BailErrorStrategy());

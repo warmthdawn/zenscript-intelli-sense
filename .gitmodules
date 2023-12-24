@@ -1,0 +1,6 @@
+[submodule "tree-sitter-zenscript/tree-sitter"]
+	path = tree-sitter-zenscript/tree-sitter
+	url = git@github.com:tree-sitter/tree-sitter.git
+[submodule "tree-sitter-zenscript/java-binding"]
+	path = java-tree-sitter
+	url = git@github.com:warmthdawn/java-tree-sitter.git

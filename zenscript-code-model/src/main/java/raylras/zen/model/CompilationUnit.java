@@ -1,5 +1,7 @@
 package raylras.zen.model;
 
+import ai.serenade.treesitter.Tree;
+import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -28,8 +30,12 @@ public class CompilationUnit {
     private final Map<ParseTree, Scope> scopeMap = new IdentityHashMap<>();
     private final Map<ParseTree, Symbol> symbolMap = new IdentityHashMap<>();
 
+    private ANTLRErrorListener errorListener;
+
     private CommonTokenStream tokenStream;
     private ParseTree parseTree;
+
+    private Tree tsParseTree;
 
     public CompilationUnit(Path path, CompilationEnvironment env) {
         this.path = path;
@@ -114,12 +120,28 @@ public class CompilationUnit {
         this.parseTree = parseTree;
     }
 
+    public Tree getTsParseTree() {
+        return tsParseTree;
+    }
+
+    public void setTsParseTree(Tree tsParseTree) {
+        this.tsParseTree = tsParseTree;
+    }
+
     public CommonTokenStream getTokenStream() {
         return tokenStream;
     }
 
     public void setTokenStream(CommonTokenStream tokenStream) {
         this.tokenStream = tokenStream;
+    }
+
+    public ANTLRErrorListener getErrorListener() {
+        return errorListener;
+    }
+
+    public void setErrorListener(ANTLRErrorListener errorListener) {
+        this.errorListener = errorListener;
     }
 
     public void accept(Visitor<?> visitor) {
