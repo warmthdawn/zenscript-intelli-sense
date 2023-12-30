@@ -1,11 +1,11 @@
 package raylras.zen.model;
 
-import ai.serenade.treesitter.Tree;
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import raylas.zen.treesitter.Tree;
 import raylras.zen.model.parser.ZenScriptLexer;
 import raylras.zen.model.scope.Scope;
 import raylras.zen.model.symbol.ImportSymbol;
@@ -60,7 +60,8 @@ public class CompilationUnit {
         scopeMap.put(scope.getCst(), scope);
     }
 
-    public Optional<Symbol> getSymbol(ParseTree cst) {
+    public Optional<Symbol> getSymbol(ParseTree
+                                               cst) {
         return Optional.ofNullable(symbolMap.get(cst));
     }
 

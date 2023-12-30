@@ -7,7 +7,6 @@ import org.eclipse.lsp4j.services.WorkspaceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import raylras.zen.lsp.diagonsitc.Diagnostics;
-import raylras.zen.lsp.diagonsitc.SyntaxDiagnostic;
 import raylras.zen.lsp.provider.*;
 import raylras.zen.model.CompilationEnvironment;
 import raylras.zen.model.CompilationUnit;
@@ -64,7 +63,7 @@ public class ZenLanguageService implements TextDocumentService, WorkspaceService
                 LogMessages.start("didChange", path, logger);
                 CompilationUnit unit = getUnit(path).orElseThrow();
                 String source = params.getContentChanges().get(0).getText();
-                Diagnostics.clear(unit);
+                Diagnostics.clear(unit, ZenLanguageServer.getClient());
                 Compilations.load(unit, source);
                 Diagnostics.checkSyntax(unit, ZenLanguageServer.getClient());
                 LogMessages.finish("didChange", path, logger);
@@ -257,7 +256,7 @@ public class ZenLanguageService implements TextDocumentService, WorkspaceService
                             }
                             case Changed -> {
                                 CompilationUnit unit = env.getUnit(path);
-                                Diagnostics.clear(unit);
+                                Diagnostics.clear(unit, ZenLanguageServer.getClient());
                                 Compilations.load(unit);
                                 Diagnostics.checkSyntax(unit, ZenLanguageServer.getClient());
                             }

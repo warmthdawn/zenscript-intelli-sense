@@ -18,9 +18,10 @@ public class Diagnostics {
         return storage.computeIfAbsent(unit, u -> new ArrayList<>());
     }
 
-    public static void clear(CompilationUnit cu) {
+    public static void clear(CompilationUnit cu, LanguageClient client) {
         List<ZenDiagnostic> diagnostics = getDiagnostics(cu);
         diagnostics.clear();
+        publishDiagnostics(cu, diagnostics, client);
     }
 
     public static void checkSyntax(CompilationEnvironment env, LanguageClient client) {
@@ -31,6 +32,7 @@ public class Diagnostics {
     }
 
     public static void checkSyntax(CompilationUnit cu, LanguageClient client) {
+
         List<ZenDiagnostic> diagnostics = getDiagnostics(cu);
         CompletableFuture.runAsync(() -> {
             if(SyntaxDiagnostic.checkSyntax(cu, diagnostics)) {

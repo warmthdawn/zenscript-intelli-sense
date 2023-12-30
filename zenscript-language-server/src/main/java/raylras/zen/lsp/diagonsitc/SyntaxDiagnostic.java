@@ -1,15 +1,15 @@
 package raylras.zen.lsp.diagonsitc;
 
-import ai.serenade.treesitter.Node;
-import ai.serenade.treesitter.Tree;
 import org.antlr.v4.runtime.tree.ParseTree;
+import raylas.zen.treesitter.Node;
+import raylas.zen.treesitter.Tree;
+import raylas.zen.treesitter.TreeCursor;
 import raylras.zen.model.CompilationUnit;
 import raylras.zen.model.Visitor;
 import raylras.zen.model.parser.ZenScriptParser;
 import raylras.zen.util.Position;
 import raylras.zen.util.Range;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,34 +19,51 @@ public class SyntaxDiagnostic {
         List<ZenDiagnostic> result = new ArrayList<>();
         SyntaxVisitor visitor = new SyntaxVisitor(cu.isGenerated(), result);
         visitor.visit(cu.getParseTree());
-        if(result.isEmpty()) {
-            return false;
-        }
         diagnostics.addAll(result);
-        return true;
+        result.clear();
+        if (cu.isGenerated()) {
+            return !result.isEmpty();
+        }
+        checkByTSTree(result, cu.getTsParseTree());
+        diagnostics.addAll(result);
+        return !result.isEmpty();
+    }
+
+    private static void iterateChild(List<ZenDiagnostic> result, TreeCursor cursor) {
+        String msg = "";
+        Node node = cursor.getNode();
+        if (node.isError()) {
+            msg = "ERROR";
+        } else if (node.isMissing()) {
+            msg = "MISSING:" + node.getSymbolName();
+        }
+        if (!msg.isEmpty()) {
+            result.add(new ZenDiagnostic(msg, node.getRange(), ZenDiagnostic.Type.SyntaxError, ZenDiagnostic.Severity.Error));
+        }
+
+        if (!node.getHasError()) {
+            return;
+        }
+        if (!cursor.gotoFirstChild()) {
+            return;
+        }
+        do {
+            iterateChild(result, cursor);
+        }
+        while (cursor.gotoNextSibling());
+
+        cursor.gotoParent();
+
     }
 
     private static void checkByTSTree(List<ZenDiagnostic> result, Tree tree) {
 
-//        ArrayDeque<Node> queue = new ArrayDeque<>();
-//
-//        queue.push(tree.getRootNode());
-//
-//        while (!queue.isEmpty()) {
-//            Node node = queue.pop();
-//            if(!node.hasError()) {
-//                continue;
-//            }
-//            if(node.isError()) {
-//
-//                result.add(new ZenDiagnostic("err", Range.of(0,0,0,0), ZenDiagnostic.Type.SyntaxError, ZenDiagnostic.Severity.Error));
-//            }
-//
-//
-//            for(int i=0;i<node.getChildCount();i++) {
-//                queue.push(node.getChild(i));
-//            }
-//        }
+        try (TreeCursor cursor = tree.walk()) {
+
+            iterateChild(result, cursor);
+        }
+
+
     }
 
     private static class SyntaxVisitor extends Visitor<Void> {
@@ -72,7 +89,7 @@ public class SyntaxDiagnostic {
 
         @Override
         public Void visitImportDeclaration(ZenScriptParser.ImportDeclarationContext ctx) {
-            if(ctx.qualifiedName() == null) {
+            if (ctx.qualifiedName() == null) {
                 missingAfter("Identifier expected.", ctx.IMPORT());
             }
 

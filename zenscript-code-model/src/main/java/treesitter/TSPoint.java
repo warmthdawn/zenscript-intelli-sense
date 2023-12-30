@@ -1,5 +1,7 @@
 package treesitter;
+
 import com.sun.jna.Structure;
+
 import java.util.Arrays;
 import java.util.List;
 /**
@@ -7,32 +9,24 @@ import java.util.List;
  * a tool written by <a href="http://ochafik.com/">Olivier Chafik</a> that <a href="http://code.google.com/p/jnaerator/wiki/CreditsAndLicense">uses a few opensource projects.</a>.<br>
  * For help, please visit <a href="http://nativelibs4java.googlecode.com/">NativeLibs4Java</a> , <a href="http://rococoa.dev.java.net/">Rococoa</a>, or <a href="http://jna.dev.java.net/">JNA</a>.
  */
-public class TSQueryPredicateStep extends Structure {
-	/**
-	 * @see TSQueryPredicateStepType<br>
-	 * C type : TSQueryPredicateStepType
-	 */
-	public int type;
-	public int value_id;
-	public TSQueryPredicateStep() {
+public class TSPoint extends Structure {
+	public int row;
+	public int column;
+	public TSPoint() {
 		super();
 	}
 	protected List<String> getFieldOrder(){
-		return Arrays.asList("type", "value_id");
+		return Arrays.asList("row", "column");
 	}
-	/**
-	 * @param type @see TSQueryPredicateStepType<br>
-	 * C type : TSQueryPredicateStepType
-	 */
-	public TSQueryPredicateStep(int type, int value_id) {
+	public TSPoint(int row, int column) {
 		super();
-		this.type = type;
-		this.value_id = value_id;
+		this.row = row;
+		this.column = column;
 	}
-	public static class ByReference extends TSQueryPredicateStep implements Structure.ByReference {
+	public static class ByReference extends TSPoint implements Structure.ByReference {
 		
 	};
-	public static class ByValue extends TSQueryPredicateStep implements Structure.ByValue {
+	public static class ByValue extends TSPoint implements Structure.ByValue {
 		
 	};
 }

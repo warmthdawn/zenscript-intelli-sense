@@ -4,15 +4,36 @@ import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Platform;
 
+import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.security.CodeSource;
 
 public class PlatformUtils {
 
+    static  {
+//        PlatformUtils.addLibSearchPath();
+        NativeLibrary.addSearchPath("tree-sitter-zenscript", "E:\\plugins\\zenscript-intelli-sense\\tree-sitter-zenscript\\build\\Debug");
+    }
 
     public static TreeSitterLibrary loadLibrary() {
         final String baseLibName = "tree-sitter-zenscript";
-        Path libPath = Paths.get(System.getProperty("user.dir"), "lib");
+        return Native.load(baseLibName, TreeSitterLibrary.class);
+    }
+    public static NativeLibrary loadNative() {
+        final String baseLibName = "tree-sitter-zenscript";
+        return NativeLibrary.getInstance(baseLibName);
+    }
+
+
+    private static void addLibSearchPath() {
+        CodeSource codeSource = PlatformUtils.class.getProtectionDomain().getCodeSource();
+        Path jarFile = null;
+        try {
+            jarFile = Path.of(codeSource.getLocation().toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        Path libPath = jarFile.getParent().resolve("lib");
 
         libPath = libPath.resolve(getLibDir());
 
@@ -21,8 +42,6 @@ public class PlatformUtils {
                 "tree-sitter-zenscript",
                 libPath.toAbsolutePath().toString()
         );
-
-        return Native.load(baseLibName, TreeSitterLibrary.class);
 
     }
 

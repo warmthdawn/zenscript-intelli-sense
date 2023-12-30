@@ -2,7 +2,6 @@ package treesitter;
 
 import com.sun.jna.*;
 import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.PointerByReference;
 
 import java.nio.IntBuffer;
 
@@ -15,6 +14,7 @@ import java.nio.IntBuffer;
  * For help, please visit <a href="http://nativelibs4java.googlecode.com/">NativeLibs4Java</a> , <a href="http://rococoa.dev.java.net/">Rococoa</a>, or <a href="http://jna.dev.java.net/">JNA</a>.
  */
 public interface TreeSitterLibrary extends Library {
+	public static final NativeLibrary NATIVE_LIBRARY = PlatformUtils.loadNative();
 	public static final TreeSitterLibrary INSTANCE = PlatformUtils.loadLibrary();
 
 
@@ -148,16 +148,8 @@ public interface TreeSitterLibrary extends Library {
 	 * Get the parser's current language.<br>
 	 * Original signature : <code>TSLanguage* ts_parser_language(const TSParser*)</code><br>
 	 * <i>native declaration : line 165</i><br>
-	 * @deprecated use the safer methods {@link #ts_parser_language(treesitter.TreeSitterLibrary.TSParser[])} and {@link #ts_parser_language(treesitter.TreeSitterLibrary.TSParser)} instead
 	 */
-	@Deprecated
 	TreeSitterLibrary.TSLanguage ts_parser_language(TreeSitterLibrary.TSParser self);
-	/**
-	 * Get the parser's current language.<br>
-	 * Original signature : <code>TSLanguage* ts_parser_language(const TSParser*)</code><br>
-	 * <i>native declaration : line 165</i>
-	 */
-	TreeSitterLibrary.TSLanguage ts_parser_language(TreeSitterLibrary.TSParser self[]);
 	/**
 	 * Set the language that the parser should use for parsing.<br>
 	 * * Returns a boolean indicating whether or not the language was successfully<br>
@@ -168,22 +160,8 @@ public interface TreeSitterLibrary extends Library {
 	 * [`TREE_SITTER_MIN_COMPATIBLE_LANGUAGE_VERSION`] constants.<br>
 	 * Original signature : <code>bool ts_parser_set_language(TSParser*, const TSLanguage*)</code><br>
 	 * <i>native declaration : line 177</i><br>
-	 * @deprecated use the safer methods {@link #ts_parser_set_language(treesitter.TreeSitterLibrary.TSParser, treesitter.TreeSitterLibrary.TSLanguage[])} and {@link #ts_parser_set_language(treesitter.TreeSitterLibrary.TSParser, treesitter.TreeSitterLibrary.TSLanguage)} instead
 	 */
-	@Deprecated
 	byte ts_parser_set_language(TreeSitterLibrary.TSParser self, TreeSitterLibrary.TSLanguage language);
-	/**
-	 * Set the language that the parser should use for parsing.<br>
-	 * * Returns a boolean indicating whether or not the language was successfully<br>
-	 * assigned. True means assignment succeeded. False means there was a version<br>
-	 * mismatch: the language was generated with an incompatible version of the<br>
-	 * Tree-sitter CLI. Check the language's version using [`ts_language_version`]<br>
-	 * and compare it to this library's [`TREE_SITTER_LANGUAGE_VERSION`] and<br>
-	 * [`TREE_SITTER_MIN_COMPATIBLE_LANGUAGE_VERSION`] constants.<br>
-	 * Original signature : <code>bool ts_parser_set_language(TSParser*, const TSLanguage*)</code><br>
-	 * <i>native declaration : line 177</i>
-	 */
-	byte ts_parser_set_language(TreeSitterLibrary.TSParser self, TreeSitterLibrary.TSLanguage language[]);
 	/**
 	 * Set the ranges of text that the parser should include when parsing.<br>
 	 * * By default, the parser will always include entire documents. This function<br>
@@ -203,7 +181,7 @@ public interface TreeSitterLibrary extends Library {
 	 * Original signature : <code>bool ts_parser_set_included_ranges(TSParser*, const TSRange*, uint32_t)</code><br>
 	 * <i>native declaration : line 201</i>
 	 */
-	byte ts_parser_set_included_ranges(TreeSitterLibrary.TSParser self, TSRange ranges, int count);
+	byte ts_parser_set_included_ranges(TreeSitterLibrary.TSParser self, TSRange[] ranges, int count);
 	/**
 	 * Get the ranges of text that the parser will include when parsing.<br>
 	 * * The returned pointer is owned by the parser. The caller should not free it<br>
@@ -211,19 +189,8 @@ public interface TreeSitterLibrary extends Library {
 	 * `count` pointer.<br>
 	 * Original signature : <code>TSRange* ts_parser_included_ranges(const TSParser*, uint32_t*)</code><br>
 	 * <i>native declaration : line 214</i><br>
-	 * @deprecated use the safer methods {@link #ts_parser_included_ranges(treesitter.TreeSitterLibrary.TSParser[], java.nio.IntBuffer)} and {@link #ts_parser_included_ranges(treesitter.TreeSitterLibrary.TSParser, com.sun.jna.ptr.IntByReference)} instead
 	 */
-	@Deprecated
 	TSRange ts_parser_included_ranges(TreeSitterLibrary.TSParser self, IntByReference count);
-	/**
-	 * Get the ranges of text that the parser will include when parsing.<br>
-	 * * The returned pointer is owned by the parser. The caller should not free it<br>
-	 * or write to it. The length of the array will be written to the given<br>
-	 * `count` pointer.<br>
-	 * Original signature : <code>TSRange* ts_parser_included_ranges(const TSParser*, uint32_t*)</code><br>
-	 * <i>native declaration : line 214</i>
-	 */
-	TSRange ts_parser_included_ranges(TreeSitterLibrary.TSParser self[], IntBuffer count);
 	/**
 	 * Use the parser to parse some source code and create a syntax tree.<br>
 	 * * If you are parsing this document for the first time, pass `NULL` for the<br>
@@ -317,19 +284,8 @@ public interface TreeSitterLibrary extends Library {
 	 * length in bytes.<br>
 	 * Original signature : <code>TSTree* ts_parser_parse_string(TSParser*, const TSTree*, const char*, uint32_t)</code><br>
 	 * <i>native declaration : line 274</i><br>
-	 * @deprecated use the safer methods {@link #ts_parser_parse_string(treesitter.TreeSitterLibrary.TSParser, treesitter.TreeSitterLibrary.TSTree[], java.lang.String, int)} and {@link #ts_parser_parse_string(treesitter.TreeSitterLibrary.TSParser, treesitter.TreeSitterLibrary.TSTree, com.sun.jna.Pointer, int)} instead
 	 */
-	@Deprecated
 	TreeSitterLibrary.TSTree ts_parser_parse_string(TreeSitterLibrary.TSParser self, TreeSitterLibrary.TSTree old_tree, Pointer string, int length);
-	/**
-	 * Use the parser to parse some source code stored in one contiguous buffer.<br>
-	 * The first two parameters are the same as in the [`ts_parser_parse`] function<br>
-	 * above. The second two parameters indicate the location of the buffer and its<br>
-	 * length in bytes.<br>
-	 * Original signature : <code>TSTree* ts_parser_parse_string(TSParser*, const TSTree*, const char*, uint32_t)</code><br>
-	 * <i>native declaration : line 274</i>
-	 */
-	TreeSitterLibrary.TSTree ts_parser_parse_string(TreeSitterLibrary.TSParser self, TreeSitterLibrary.TSTree old_tree[], String string, int length);
 	/**
 	 * Use the parser to parse some source code stored in one contiguous buffer with<br>
 	 * a given encoding. The first four parameters work the same as in the<br>
@@ -337,19 +293,8 @@ public interface TreeSitterLibrary extends Library {
 	 * the text is encoded as UTF8 or UTF16.<br>
 	 * Original signature : <code>TSTree* ts_parser_parse_string_encoding(TSParser*, const TSTree*, const char*, uint32_t, TSInputEncoding)</code><br>
 	 * <i>native declaration : line 287</i><br>
-	 * @deprecated use the safer methods {@link #ts_parser_parse_string_encoding(treesitter.TreeSitterLibrary.TSParser, treesitter.TreeSitterLibrary.TSTree[], java.lang.String, int, int)} and {@link #ts_parser_parse_string_encoding(treesitter.TreeSitterLibrary.TSParser, treesitter.TreeSitterLibrary.TSTree, com.sun.jna.Pointer, int, int)} instead
 	 */
-	@Deprecated
 	TreeSitterLibrary.TSTree ts_parser_parse_string_encoding(TreeSitterLibrary.TSParser self, TreeSitterLibrary.TSTree old_tree, Pointer string, int length, int encoding);
-	/**
-	 * Use the parser to parse some source code stored in one contiguous buffer with<br>
-	 * a given encoding. The first four parameters work the same as in the<br>
-	 * [`ts_parser_parse_string`] method above. The final parameter indicates whether<br>
-	 * the text is encoded as UTF8 or UTF16.<br>
-	 * Original signature : <code>TSTree* ts_parser_parse_string_encoding(TSParser*, const TSTree*, const char*, uint32_t, TSInputEncoding)</code><br>
-	 * <i>native declaration : line 287</i>
-	 */
-	TreeSitterLibrary.TSTree ts_parser_parse_string_encoding(TreeSitterLibrary.TSParser self, TreeSitterLibrary.TSTree old_tree[], String string, int length, int encoding);
 	/**
 	 * Instruct the parser to start the next parse from the beginning.<br>
 	 * * If the parser previously failed because of a timeout or a cancellation, then<br>
@@ -374,16 +319,8 @@ public interface TreeSitterLibrary extends Library {
 	 * Get the duration in microseconds that parsing is allowed to take.<br>
 	 * Original signature : <code>uint64_t ts_parser_timeout_micros(const TSParser*)</code><br>
 	 * <i>native declaration : line 318</i><br>
-	 * @deprecated use the safer methods {@link #ts_parser_timeout_micros(treesitter.TreeSitterLibrary.TSParser[])} and {@link #ts_parser_timeout_micros(treesitter.TreeSitterLibrary.TSParser)} instead
 	 */
-	@Deprecated
 	long ts_parser_timeout_micros(TreeSitterLibrary.TSParser self);
-	/**
-	 * Get the duration in microseconds that parsing is allowed to take.<br>
-	 * Original signature : <code>uint64_t ts_parser_timeout_micros(const TSParser*)</code><br>
-	 * <i>native declaration : line 318</i>
-	 */
-	long ts_parser_timeout_micros(TreeSitterLibrary.TSParser self[]);
 	/**
 	 * Set the parser's current cancellation flag pointer.<br>
 	 * * If a non-null pointer is assigned, then the parser will periodically read<br>
@@ -391,33 +328,14 @@ public interface TreeSitterLibrary extends Library {
 	 * halt early, returning NULL. See [`ts_parser_parse`] for more information.<br>
 	 * Original signature : <code>void ts_parser_set_cancellation_flag(TSParser*, const size_t*)</code><br>
 	 * <i>native declaration : line 327</i><br>
-	 * @deprecated use the safer methods {@link #ts_parser_set_cancellation_flag(treesitter.TreeSitterLibrary.TSParser, treesitter.NativeSize[])} and {@link #ts_parser_set_cancellation_flag(treesitter.TreeSitterLibrary.TSParser, treesitter.NativeSizeByReference)} instead
 	 */
-	@Deprecated
 	void ts_parser_set_cancellation_flag(TreeSitterLibrary.TSParser self, NativeSizeByReference flag);
-	/**
-	 * Set the parser's current cancellation flag pointer.<br>
-	 * * If a non-null pointer is assigned, then the parser will periodically read<br>
-	 * from this pointer during parsing. If it reads a non-zero value, it will<br>
-	 * halt early, returning NULL. See [`ts_parser_parse`] for more information.<br>
-	 * Original signature : <code>void ts_parser_set_cancellation_flag(TSParser*, const size_t*)</code><br>
-	 * <i>native declaration : line 327</i>
-	 */
-	void ts_parser_set_cancellation_flag(TreeSitterLibrary.TSParser self, NativeSize flag[]);
 	/**
 	 * Get the parser's current cancellation flag pointer.<br>
 	 * Original signature : <code>size_t* ts_parser_cancellation_flag(const TSParser*)</code><br>
 	 * <i>native declaration : line 332</i><br>
-	 * @deprecated use the safer methods {@link #ts_parser_cancellation_flag(treesitter.TreeSitterLibrary.TSParser[])} and {@link #ts_parser_cancellation_flag(treesitter.TreeSitterLibrary.TSParser)} instead
 	 */
-	@Deprecated
 	NativeSizeByReference ts_parser_cancellation_flag(TreeSitterLibrary.TSParser self);
-	/**
-	 * Get the parser's current cancellation flag pointer.<br>
-	 * Original signature : <code>size_t* ts_parser_cancellation_flag(const TSParser*)</code><br>
-	 * <i>native declaration : line 332</i>
-	 */
-	NativeSizeByReference ts_parser_cancellation_flag(TreeSitterLibrary.TSParser self[]);
 	/**
 	 * Set the logger that a parser should use during parsing.<br>
 	 * * The parser does not take ownership over the logger payload. If a logger was<br>
@@ -431,16 +349,8 @@ public interface TreeSitterLibrary extends Library {
 	 * Get the parser's current logger.<br>
 	 * Original signature : <code>TSLogger ts_parser_logger(const TSParser*)</code><br>
 	 * <i>native declaration : line 346</i><br>
-	 * @deprecated use the safer methods {@link #ts_parser_logger(treesitter.TreeSitterLibrary.TSParser[])} and {@link #ts_parser_logger(treesitter.TreeSitterLibrary.TSParser)} instead
 	 */
-	@Deprecated
 	treesitter.TSLogger.ByValue ts_parser_logger(TreeSitterLibrary.TSParser self);
-	/**
-	 * Get the parser's current logger.<br>
-	 * Original signature : <code>TSLogger ts_parser_logger(const TSParser*)</code><br>
-	 * <i>native declaration : line 346</i>
-	 */
-	treesitter.TSLogger.ByValue ts_parser_logger(TreeSitterLibrary.TSParser self[]);
 	/**
 	 * Set the file descriptor to which the parser should write debugging graphs<br>
 	 * during parsing. The graphs are formatted in the DOT language. You may want<br>
@@ -456,18 +366,8 @@ public interface TreeSitterLibrary extends Library {
 	 * a time, as syntax trees are not thread safe.<br>
 	 * Original signature : <code>TSTree* ts_tree_copy(const TSTree*)</code><br>
 	 * <i>native declaration : line 366</i><br>
-	 * @deprecated use the safer methods {@link #ts_tree_copy(treesitter.TreeSitterLibrary.TSTree[])} and {@link #ts_tree_copy(treesitter.TreeSitterLibrary.TSTree)} instead
 	 */
-	@Deprecated
 	TreeSitterLibrary.TSTree ts_tree_copy(TreeSitterLibrary.TSTree self);
-	/**
-	 * Create a shallow copy of the syntax tree. This is very fast.<br>
-	 * * You need to copy a syntax tree in order to use it on more than one thread at<br>
-	 * a time, as syntax trees are not thread safe.<br>
-	 * Original signature : <code>TSTree* ts_tree_copy(const TSTree*)</code><br>
-	 * <i>native declaration : line 366</i>
-	 */
-	TreeSitterLibrary.TSTree ts_tree_copy(TreeSitterLibrary.TSTree self[]);
 	/**
 	 * Delete the syntax tree, freeing all of the memory that it used.<br>
 	 * Original signature : <code>void ts_tree_delete(TSTree*)</code><br>
@@ -478,62 +378,29 @@ public interface TreeSitterLibrary extends Library {
 	 * Get the root node of the syntax tree.<br>
 	 * Original signature : <code>TSNode ts_tree_root_node(const TSTree*)</code><br>
 	 * <i>native declaration : line 376</i><br>
-	 * @deprecated use the safer methods {@link #ts_tree_root_node(treesitter.TreeSitterLibrary.TSTree[])} and {@link #ts_tree_root_node(treesitter.TreeSitterLibrary.TSTree)} instead
 	 */
-	@Deprecated
 	TSNode.ByValue ts_tree_root_node(TreeSitterLibrary.TSTree self);
-	/**
-	 * Get the root node of the syntax tree.<br>
-	 * Original signature : <code>TSNode ts_tree_root_node(const TSTree*)</code><br>
-	 * <i>native declaration : line 376</i>
-	 */
-	TSNode.ByValue ts_tree_root_node(TreeSitterLibrary.TSTree self[]);
 	/**
 	 * Get the root node of the syntax tree, but with its position<br>
 	 * shifted forward by the given offset.<br>
 	 * Original signature : <code>TSNode ts_tree_root_node_with_offset(const TSTree*, uint32_t, TSPoint)</code><br>
 	 * <i>native declaration : line 382</i><br>
-	 * @deprecated use the safer methods {@link #ts_tree_root_node_with_offset(treesitter.TreeSitterLibrary.TSTree[], int, treesitter.TSPoint.ByValue)} and {@link #ts_tree_root_node_with_offset(treesitter.TreeSitterLibrary.TSTree, int, treesitter.TSPoint.ByValue)} instead
 	 */
-	@Deprecated
 	TSNode.ByValue ts_tree_root_node_with_offset(TreeSitterLibrary.TSTree self, int offset_bytes, treesitter.TSPoint.ByValue offset_extent);
-	/**
-	 * Get the root node of the syntax tree, but with its position<br>
-	 * shifted forward by the given offset.<br>
-	 * Original signature : <code>TSNode ts_tree_root_node_with_offset(const TSTree*, uint32_t, TSPoint)</code><br>
-	 * <i>native declaration : line 382</i>
-	 */
-	TSNode.ByValue ts_tree_root_node_with_offset(TreeSitterLibrary.TSTree self[], int offset_bytes, treesitter.TSPoint.ByValue offset_extent);
+
 	/**
 	 * Get the language that was used to parse the syntax tree.<br>
 	 * Original signature : <code>TSLanguage* ts_tree_language(const TSTree*)</code><br>
 	 * <i>native declaration : line 391</i><br>
-	 * @deprecated use the safer methods {@link #ts_tree_language(treesitter.TreeSitterLibrary.TSTree[])} and {@link #ts_tree_language(treesitter.TreeSitterLibrary.TSTree)} instead
 	 */
-	@Deprecated
 	TreeSitterLibrary.TSLanguage ts_tree_language(TreeSitterLibrary.TSTree self);
-	/**
-	 * Get the language that was used to parse the syntax tree.<br>
-	 * Original signature : <code>TSLanguage* ts_tree_language(const TSTree*)</code><br>
-	 * <i>native declaration : line 391</i>
-	 */
-	TreeSitterLibrary.TSLanguage ts_tree_language(TreeSitterLibrary.TSTree self[]);
 	/**
 	 * Get the array of included ranges that was used to parse the syntax tree.<br>
 	 * * The returned pointer must be freed by the caller.<br>
 	 * Original signature : <code>TSRange* ts_tree_included_ranges(const TSTree*, uint32_t*)</code><br>
 	 * <i>native declaration : line 398</i><br>
-	 * @deprecated use the safer methods {@link #ts_tree_included_ranges(treesitter.TreeSitterLibrary.TSTree[], java.nio.IntBuffer)} and {@link #ts_tree_included_ranges(treesitter.TreeSitterLibrary.TSTree, com.sun.jna.ptr.IntByReference)} instead
 	 */
-	@Deprecated
 	TSRange ts_tree_included_ranges(TreeSitterLibrary.TSTree self, IntByReference length);
-	/**
-	 * Get the array of included ranges that was used to parse the syntax tree.<br>
-	 * * The returned pointer must be freed by the caller.<br>
-	 * Original signature : <code>TSRange* ts_tree_included_ranges(const TSTree*, uint32_t*)</code><br>
-	 * <i>native declaration : line 398</i>
-	 */
-	TSRange ts_tree_included_ranges(TreeSitterLibrary.TSTree self[], IntBuffer length);
 	/**
 	 * Edit the syntax tree to keep it in sync with source code that has been<br>
 	 * edited.<br>
@@ -556,25 +423,8 @@ public interface TreeSitterLibrary extends Library {
 	 * given `length` pointer.<br>
 	 * Original signature : <code>TSRange* ts_tree_get_changed_ranges(const TSTree*, const TSTree*, uint32_t*)</code><br>
 	 * <i>native declaration : line 423</i><br>
-	 * @deprecated use the safer methods {@link #ts_tree_get_changed_ranges(treesitter.TreeSitterLibrary.TSTree[], treesitter.TreeSitterLibrary.TSTree[], java.nio.IntBuffer)} and {@link #ts_tree_get_changed_ranges(treesitter.TreeSitterLibrary.TSTree, treesitter.TreeSitterLibrary.TSTree, com.sun.jna.ptr.IntByReference)} instead
 	 */
-	@Deprecated
 	TSRange ts_tree_get_changed_ranges(TreeSitterLibrary.TSTree old_tree, TreeSitterLibrary.TSTree new_tree, IntByReference length);
-	/**
-	 * Compare an old edited syntax tree to a new syntax tree representing the same<br>
-	 * document, returning an array of ranges whose syntactic structure has changed.<br>
-	 * * For this to work correctly, the old syntax tree must have been edited such<br>
-	 * that its ranges match up to the new tree. Generally, you'll want to call<br>
-	 * this function right after calling one of the [`ts_parser_parse`] functions.<br>
-	 * You need to pass the old tree that was passed to parse, as well as the new<br>
-	 * tree that was returned from that function.<br>
-	 * * The returned array is allocated using `malloc` and the caller is responsible<br>
-	 * for freeing it using `free`. The length of the array will be written to the<br>
-	 * given `length` pointer.<br>
-	 * Original signature : <code>TSRange* ts_tree_get_changed_ranges(const TSTree*, const TSTree*, uint32_t*)</code><br>
-	 * <i>native declaration : line 423</i>
-	 */
-	TSRange ts_tree_get_changed_ranges(TreeSitterLibrary.TSTree old_tree[], TreeSitterLibrary.TSTree new_tree[], IntBuffer length);
 	/**
 	 * Write a DOT graph describing the syntax tree to the given file.<br>
 	 * Original signature : <code>void ts_tree_print_dot_graph(const TSTree*, int)</code><br>
@@ -757,17 +607,9 @@ public interface TreeSitterLibrary extends Library {
 	/**
 	 * Get the node's child with the given field name.<br>
 	 * Original signature : <code>TSNode ts_node_child_by_field_name(TSNode, const char*, uint32_t)</code><br>
-	 * <i>native declaration : line 584</i><br>
-	 * @deprecated use the safer methods {@link #ts_node_child_by_field_name(treesitter.TSNode.ByValue, java.lang.String, int)} and {@link #ts_node_child_by_field_name(treesitter.TSNode.ByValue, com.sun.jna.Pointer, int)} instead
-	 */
-	@Deprecated
-	TSNode.ByValue ts_node_child_by_field_name(TSNode.ByValue self, Pointer name, int name_length);
-	/**
-	 * Get the node's child with the given field name.<br>
-	 * Original signature : <code>TSNode ts_node_child_by_field_name(TSNode, const char*, uint32_t)</code><br>
 	 * <i>native declaration : line 584</i>
 	 */
-	TSNode.ByValue ts_node_child_by_field_name(TSNode.ByValue self, String name, int name_length);
+	TSNode.ByValue ts_node_child_by_field_name(TSNode.ByValue self, Pointer name, int name_length);
 	/**
 	 * Get the node's child with the given numerical field id.<br>
 	 * * You can convert a field name to an id using the<br>
@@ -871,13 +713,13 @@ public interface TreeSitterLibrary extends Library {
 	 * Original signature : <code>void ts_tree_cursor_delete(TSTreeCursor*)</code><br>
 	 * <i>native declaration : line 671</i>
 	 */
-	void ts_tree_cursor_delete(TSTreeCursor self);
+	void ts_tree_cursor_delete(TSTreeCursor.ByReference self);
 	/**
 	 * Re-initialize a tree cursor to start at a different node.<br>
 	 * Original signature : <code>void ts_tree_cursor_reset(TSTreeCursor*, TSNode)</code><br>
 	 * <i>native declaration : line 676</i>
 	 */
-	void ts_tree_cursor_reset(TSTreeCursor self, TSNode.ByValue node);
+	void ts_tree_cursor_reset(TSTreeCursor.ByReference self, TSNode.ByValue node);
 	/**
 	 * Re-initialize a tree cursor to the same position as another cursor.<br>
 	 * * Unlike [`ts_tree_cursor_reset`], this will not lose parent information and<br>
@@ -891,7 +733,7 @@ public interface TreeSitterLibrary extends Library {
 	 * Original signature : <code>TSNode ts_tree_cursor_current_node(const TSTreeCursor*)</code><br>
 	 * <i>native declaration : line 689</i>
 	 */
-	TSNode.ByValue ts_tree_cursor_current_node(TSTreeCursor self);
+	TSNode.ByValue ts_tree_cursor_current_node(TSTreeCursor.ByReference self);
 	/**
 	 * Get the field name of the tree cursor's current node.<br>
 	 * * This returns `NULL` if the current node doesn't have a field.<br>
@@ -899,7 +741,7 @@ public interface TreeSitterLibrary extends Library {
 	 * Original signature : <code>char* ts_tree_cursor_current_field_name(const TSTreeCursor*)</code><br>
 	 * <i>native declaration : line 697</i>
 	 */
-	Pointer ts_tree_cursor_current_field_name(TSTreeCursor self);
+	Pointer ts_tree_cursor_current_field_name(TSTreeCursor.ByReference self);
 	/**
 	 * Get the field id of the tree cursor's current node.<br>
 	 * * This returns zero if the current node doesn't have a field.<br>
@@ -907,7 +749,7 @@ public interface TreeSitterLibrary extends Library {
 	 * Original signature : <code>TSFieldId ts_tree_cursor_current_field_id(const TSTreeCursor*)</code><br>
 	 * <i>native declaration : line 705</i>
 	 */
-	short ts_tree_cursor_current_field_id(TSTreeCursor self);
+	short ts_tree_cursor_current_field_id(TSTreeCursor.ByReference self);
 	/**
 	 * Move the cursor to the parent of its current node.<br>
 	 * * This returns `true` if the cursor successfully moved, and returns `false`<br>
@@ -915,7 +757,7 @@ public interface TreeSitterLibrary extends Library {
 	 * Original signature : <code>bool ts_tree_cursor_goto_parent(TSTreeCursor*)</code><br>
 	 * <i>native declaration : line 713</i>
 	 */
-	byte ts_tree_cursor_goto_parent(TSTreeCursor self);
+	byte ts_tree_cursor_goto_parent(TSTreeCursor.ByReference self);
 	/**
 	 * Move the cursor to the next sibling of its current node.<br>
 	 * * This returns `true` if the cursor successfully moved, and returns `false`<br>
@@ -923,7 +765,7 @@ public interface TreeSitterLibrary extends Library {
 	 * Original signature : <code>bool ts_tree_cursor_goto_next_sibling(TSTreeCursor*)</code><br>
 	 * <i>native declaration : line 721</i>
 	 */
-	byte ts_tree_cursor_goto_next_sibling(TSTreeCursor self);
+	byte ts_tree_cursor_goto_next_sibling(TSTreeCursor.ByReference self);
 	/**
 	 * Move the cursor to the previous sibling of its current node.<br>
 	 * * This returns `true` if the cursor successfully moved, and returns `false` if<br>
@@ -935,7 +777,7 @@ public interface TreeSitterLibrary extends Library {
 	 * Original signature : <code>bool ts_tree_cursor_goto_previous_sibling(TSTreeCursor*)</code><br>
 	 * <i>native declaration : line 734</i>
 	 */
-	byte ts_tree_cursor_goto_previous_sibling(TSTreeCursor self);
+	byte ts_tree_cursor_goto_previous_sibling(TSTreeCursor.ByReference self);
 	/**
 	 * Move the cursor to the first child of its current node.<br>
 	 * * This returns `true` if the cursor successfully moved, and returns `false`<br>
@@ -943,7 +785,7 @@ public interface TreeSitterLibrary extends Library {
 	 * Original signature : <code>bool ts_tree_cursor_goto_first_child(TSTreeCursor*)</code><br>
 	 * <i>native declaration : line 742</i>
 	 */
-	byte ts_tree_cursor_goto_first_child(TSTreeCursor self);
+	byte ts_tree_cursor_goto_first_child(TSTreeCursor.ByReference self);
 	/**
 	 * Move the cursor to the last child of its current node.<br>
 	 * * This returns `true` if the cursor successfully moved, and returns `false` if<br>
@@ -954,7 +796,7 @@ public interface TreeSitterLibrary extends Library {
 	 * Original signature : <code>bool ts_tree_cursor_goto_last_child(TSTreeCursor*)</code><br>
 	 * <i>native declaration : line 754</i>
 	 */
-	byte ts_tree_cursor_goto_last_child(TSTreeCursor self);
+	byte ts_tree_cursor_goto_last_child(TSTreeCursor.ByReference self);
 	/**
 	 * Move the cursor to the node that is the nth descendant of<br>
 	 * the original node that the cursor was constructed with, where<br>
@@ -962,21 +804,21 @@ public interface TreeSitterLibrary extends Library {
 	 * Original signature : <code>void ts_tree_cursor_goto_descendant(TSTreeCursor*, uint32_t)</code><br>
 	 * <i>native declaration : line 761</i>
 	 */
-	void ts_tree_cursor_goto_descendant(TSTreeCursor self, int goal_descendant_index);
+	void ts_tree_cursor_goto_descendant(TSTreeCursor.ByReference self, int goal_descendant_index);
 	/**
 	 * Get the index of the cursor's current node out of all of the<br>
 	 * descendants of the original node that the cursor was constructed with.<br>
 	 * Original signature : <code>uint32_t ts_tree_cursor_current_descendant_index(const TSTreeCursor*)</code><br>
 	 * <i>native declaration : line 767</i>
 	 */
-	int ts_tree_cursor_current_descendant_index(TSTreeCursor self);
+	int ts_tree_cursor_current_descendant_index(TSTreeCursor.ByReference self);
 	/**
 	 * Get the depth of the cursor's current node relative to the original<br>
 	 * node that the cursor was constructed with.<br>
 	 * Original signature : <code>uint32_t ts_tree_cursor_current_depth(const TSTreeCursor*)</code><br>
 	 * <i>native declaration : line 773</i>
 	 */
-	int ts_tree_cursor_current_depth(TSTreeCursor self);
+	int ts_tree_cursor_current_depth(TSTreeCursor.ByReference self);
 	/**
 	 * Move the cursor to the first child of its current node that extends beyond<br>
 	 * the given byte offset or point.<br>
@@ -985,12 +827,12 @@ public interface TreeSitterLibrary extends Library {
 	 * Original signature : <code>int64_t ts_tree_cursor_goto_first_child_for_byte(TSTreeCursor*, uint32_t)</code><br>
 	 * <i>native declaration : line 782</i>
 	 */
-	long ts_tree_cursor_goto_first_child_for_byte(TSTreeCursor self, int goal_byte);
+	long ts_tree_cursor_goto_first_child_for_byte(TSTreeCursor.ByReference self, int goal_byte);
 	/**
 	 * Original signature : <code>int64_t ts_tree_cursor_goto_first_child_for_point(TSTreeCursor*, TSPoint)</code><br>
 	 * <i>native declaration : line 783</i>
 	 */
-	long ts_tree_cursor_goto_first_child_for_point(TSTreeCursor self, treesitter.TSPoint.ByValue goal_point);
+	long ts_tree_cursor_goto_first_child_for_point(TSTreeCursor.ByReference self, treesitter.TSPoint.ByValue goal_point);
 	/**
 	 * Original signature : <code>TSTreeCursor ts_tree_cursor_copy(const TSTreeCursor*)</code><br>
 	 * <i>native declaration : line 785</i>
@@ -1007,23 +849,9 @@ public interface TreeSitterLibrary extends Library {
 	 * 2. The type of error is written to the `error_type` parameter.<br>
 	 * Original signature : <code>TSQuery* ts_query_new(const TSLanguage*, const char*, uint32_t, uint32_t*, TSQueryError*)</code><br>
 	 * <i>native declaration : line 802</i><br>
-	 * @deprecated use the safer methods {@link #ts_query_new(treesitter.TreeSitterLibrary.TSLanguage[], java.lang.String, int, java.nio.IntBuffer, java.nio.IntBuffer)} and {@link #ts_query_new(treesitter.TreeSitterLibrary.TSLanguage, com.sun.jna.Pointer, int, com.sun.jna.ptr.IntByReference, com.sun.jna.ptr.IntByReference)} instead
 	 */
-	@Deprecated
 	TreeSitterLibrary.TSQuery ts_query_new(TreeSitterLibrary.TSLanguage language, Pointer source, int source_len, IntByReference error_offset, IntByReference error_type);
-	/**
-	 * Create a new query from a string containing one or more S-expression<br>
-	 * patterns. The query is associated with a particular language, and can<br>
-	 * only be run on syntax nodes parsed with that language.<br>
-	 * * If all of the given patterns are valid, this returns a [`TSQuery`].<br>
-	 * If a pattern is invalid, this returns `NULL`, and provides two pieces<br>
-	 * of information about the problem:<br>
-	 * 1. The byte offset of the error is written to the `error_offset` parameter.<br>
-	 * 2. The type of error is written to the `error_type` parameter.<br>
-	 * Original signature : <code>TSQuery* ts_query_new(const TSLanguage*, const char*, uint32_t, uint32_t*, TSQueryError*)</code><br>
-	 * <i>native declaration : line 802</i>
-	 */
-	TreeSitterLibrary.TSQuery ts_query_new(TreeSitterLibrary.TSLanguage language[], String source, int source_len, IntBuffer error_offset, IntBuffer error_type);
+
 	/**
 	 * Delete a query, freeing all of the memory that it used.<br>
 	 * Original signature : <code>void ts_query_delete(TSQuery*)</code><br>
@@ -1034,58 +862,26 @@ public interface TreeSitterLibrary extends Library {
 	 * Get the number of patterns, captures, or string literals in the query.<br>
 	 * Original signature : <code>uint32_t ts_query_pattern_count(const TSQuery*)</code><br>
 	 * <i>native declaration : line 818</i><br>
-	 * @deprecated use the safer methods {@link #ts_query_pattern_count(treesitter.TreeSitterLibrary.TSQuery[])} and {@link #ts_query_pattern_count(treesitter.TreeSitterLibrary.TSQuery)} instead
 	 */
-	@Deprecated
 	int ts_query_pattern_count(TreeSitterLibrary.TSQuery self);
-	/**
-	 * Get the number of patterns, captures, or string literals in the query.<br>
-	 * Original signature : <code>uint32_t ts_query_pattern_count(const TSQuery*)</code><br>
-	 * <i>native declaration : line 818</i>
-	 */
-	int ts_query_pattern_count(TreeSitterLibrary.TSQuery self[]);
 	/**
 	 * Original signature : <code>uint32_t ts_query_capture_count(const TSQuery*)</code><br>
 	 * <i>native declaration : line 819</i><br>
-	 * @deprecated use the safer methods {@link #ts_query_capture_count(treesitter.TreeSitterLibrary.TSQuery[])} and {@link #ts_query_capture_count(treesitter.TreeSitterLibrary.TSQuery)} instead
 	 */
-	@Deprecated
 	int ts_query_capture_count(TreeSitterLibrary.TSQuery self);
-	/**
-	 * Original signature : <code>uint32_t ts_query_capture_count(const TSQuery*)</code><br>
-	 * <i>native declaration : line 819</i>
-	 */
-	int ts_query_capture_count(TreeSitterLibrary.TSQuery self[]);
 	/**
 	 * Original signature : <code>uint32_t ts_query_string_count(const TSQuery*)</code><br>
 	 * <i>native declaration : line 820</i><br>
-	 * @deprecated use the safer methods {@link #ts_query_string_count(treesitter.TreeSitterLibrary.TSQuery[])} and {@link #ts_query_string_count(treesitter.TreeSitterLibrary.TSQuery)} instead
 	 */
-	@Deprecated
 	int ts_query_string_count(TreeSitterLibrary.TSQuery self);
-	/**
-	 * Original signature : <code>uint32_t ts_query_string_count(const TSQuery*)</code><br>
-	 * <i>native declaration : line 820</i>
-	 */
-	int ts_query_string_count(TreeSitterLibrary.TSQuery self[]);
 	/**
 	 * Get the byte offset where the given pattern starts in the query's source.<br>
 	 * * This can be useful when combining queries by concatenating their source<br>
 	 * code strings.<br>
 	 * Original signature : <code>uint32_t ts_query_start_byte_for_pattern(const TSQuery*, uint32_t)</code><br>
 	 * <i>native declaration : line 828</i><br>
-	 * @deprecated use the safer methods {@link #ts_query_start_byte_for_pattern(treesitter.TreeSitterLibrary.TSQuery[], int)} and {@link #ts_query_start_byte_for_pattern(treesitter.TreeSitterLibrary.TSQuery, int)} instead
 	 */
-	@Deprecated
 	int ts_query_start_byte_for_pattern(TreeSitterLibrary.TSQuery self, int pattern_index);
-	/**
-	 * Get the byte offset where the given pattern starts in the query's source.<br>
-	 * * This can be useful when combining queries by concatenating their source<br>
-	 * code strings.<br>
-	 * Original signature : <code>uint32_t ts_query_start_byte_for_pattern(const TSQuery*, uint32_t)</code><br>
-	 * <i>native declaration : line 828</i>
-	 */
-	int ts_query_start_byte_for_pattern(TreeSitterLibrary.TSQuery self[], int pattern_index);
 	/**
 	 * Get all of the predicates for the given pattern in the query.<br>
 	 * * The predicates are represented as a single array of steps. There are three<br>
@@ -1102,42 +898,14 @@ public interface TreeSitterLibrary extends Library {
 	 *    predicates, then there will be two steps with this `type` in the array.<br>
 	 * Original signature : <code>TSQueryPredicateStep* ts_query_predicates_for_pattern(const TSQuery*, uint32_t, uint32_t*)</code><br>
 	 * <i>native declaration : line 846</i><br>
-	 * @deprecated use the safer methods {@link #ts_query_predicates_for_pattern(treesitter.TreeSitterLibrary.TSQuery[], int, java.nio.IntBuffer)} and {@link #ts_query_predicates_for_pattern(treesitter.TreeSitterLibrary.TSQuery, int, com.sun.jna.ptr.IntByReference)} instead
 	 */
-	@Deprecated
 	TSQueryPredicateStep ts_query_predicates_for_pattern(TreeSitterLibrary.TSQuery self, int pattern_index, IntByReference step_count);
-	/**
-	 * Get all of the predicates for the given pattern in the query.<br>
-	 * * The predicates are represented as a single array of steps. There are three<br>
-	 * types of steps in this array, which correspond to the three legal values for<br>
-	 * the `type` field:<br>
-	 * - `TSQueryPredicateStepTypeCapture` - Steps with this type represent names<br>
-	 *    of captures. Their `value_id` can be used with the<br>
-	 *   [`ts_query_capture_name_for_id`] function to obtain the name of the capture.<br>
-	 * - `TSQueryPredicateStepTypeString` - Steps with this type represent literal<br>
-	 *    strings. Their `value_id` can be used with the<br>
-	 *    [`ts_query_string_value_for_id`] function to obtain their string value.<br>
-	 * - `TSQueryPredicateStepTypeDone` - Steps with this type are *sentinels*<br>
-	 *    that represent the end of an individual predicate. If a pattern has two<br>
-	 *    predicates, then there will be two steps with this `type` in the array.<br>
-	 * Original signature : <code>TSQueryPredicateStep* ts_query_predicates_for_pattern(const TSQuery*, uint32_t, uint32_t*)</code><br>
-	 * <i>native declaration : line 846</i>
-	 */
-	TSQueryPredicateStep ts_query_predicates_for_pattern(TreeSitterLibrary.TSQuery self[], int pattern_index, IntBuffer step_count);
 	/**
 	 * Check if the given pattern in the query has a single root node.<br>
 	 * Original signature : <code>bool ts_query_is_pattern_rooted(const TSQuery*, uint32_t)</code><br>
 	 * <i>native declaration : line 855</i><br>
-	 * @deprecated use the safer methods {@link #ts_query_is_pattern_rooted(treesitter.TreeSitterLibrary.TSQuery[], int)} and {@link #ts_query_is_pattern_rooted(treesitter.TreeSitterLibrary.TSQuery, int)} instead
 	 */
-	@Deprecated
 	byte ts_query_is_pattern_rooted(TreeSitterLibrary.TSQuery self, int pattern_index);
-	/**
-	 * Check if the given pattern in the query has a single root node.<br>
-	 * Original signature : <code>bool ts_query_is_pattern_rooted(const TSQuery*, uint32_t)</code><br>
-	 * <i>native declaration : line 855</i>
-	 */
-	byte ts_query_is_pattern_rooted(TreeSitterLibrary.TSQuery self[], int pattern_index);
 	/**
 	 * Check if the given pattern in the query is 'non local'.<br>
 	 * * A non-local pattern has multiple root nodes and can match within a<br>
@@ -1146,93 +914,35 @@ public interface TreeSitterLibrary extends Library {
 	 * when executing a query on a specific range of a syntax tree.<br>
 	 * Original signature : <code>bool ts_query_is_pattern_non_local(const TSQuery*, uint32_t)</code><br>
 	 * <i>native declaration : line 865</i><br>
-	 * @deprecated use the safer methods {@link #ts_query_is_pattern_non_local(treesitter.TreeSitterLibrary.TSQuery[], int)} and {@link #ts_query_is_pattern_non_local(treesitter.TreeSitterLibrary.TSQuery, int)} instead
 	 */
-	@Deprecated
 	byte ts_query_is_pattern_non_local(TreeSitterLibrary.TSQuery self, int pattern_index);
-	/**
-	 * Check if the given pattern in the query is 'non local'.<br>
-	 * * A non-local pattern has multiple root nodes and can match within a<br>
-	 * repeating sequence of nodes, as specified by the grammar. Non-local<br>
-	 * patterns disable certain optimizations that would otherwise be possible<br>
-	 * when executing a query on a specific range of a syntax tree.<br>
-	 * Original signature : <code>bool ts_query_is_pattern_non_local(const TSQuery*, uint32_t)</code><br>
-	 * <i>native declaration : line 865</i>
-	 */
-	byte ts_query_is_pattern_non_local(TreeSitterLibrary.TSQuery self[], int pattern_index);
 	/**
 	 * Check if a given pattern is guaranteed to match once a given step is reached.<br>
 	 * The step is specified by its byte offset in the query's source code.<br>
 	 * Original signature : <code>bool ts_query_is_pattern_guaranteed_at_step(const TSQuery*, uint32_t)</code><br>
 	 * <i>native declaration : line 871</i><br>
-	 * @deprecated use the safer methods {@link #ts_query_is_pattern_guaranteed_at_step(treesitter.TreeSitterLibrary.TSQuery[], int)} and {@link #ts_query_is_pattern_guaranteed_at_step(treesitter.TreeSitterLibrary.TSQuery, int)} instead
 	 */
-	@Deprecated
 	byte ts_query_is_pattern_guaranteed_at_step(TreeSitterLibrary.TSQuery self, int byte_offset);
-	/**
-	 * Check if a given pattern is guaranteed to match once a given step is reached.<br>
-	 * The step is specified by its byte offset in the query's source code.<br>
-	 * Original signature : <code>bool ts_query_is_pattern_guaranteed_at_step(const TSQuery*, uint32_t)</code><br>
-	 * <i>native declaration : line 871</i>
-	 */
-	byte ts_query_is_pattern_guaranteed_at_step(TreeSitterLibrary.TSQuery self[], int byte_offset);
 	/**
 	 * Get the name and length of one of the query's captures, or one of the<br>
 	 * query's string literals. Each capture and string is associated with a<br>
 	 * numeric id based on the order that it appeared in the query's source.<br>
 	 * Original signature : <code>char* ts_query_capture_name_for_id(const TSQuery*, uint32_t, uint32_t*)</code><br>
 	 * <i>native declaration : line 878</i><br>
-	 * @deprecated use the safer methods {@link #ts_query_capture_name_for_id(treesitter.TreeSitterLibrary.TSQuery[], int, java.nio.IntBuffer)} and {@link #ts_query_capture_name_for_id(treesitter.TreeSitterLibrary.TSQuery, int, com.sun.jna.ptr.IntByReference)} instead
 	 */
-	@Deprecated
 	Pointer ts_query_capture_name_for_id(TreeSitterLibrary.TSQuery self, int index, IntByReference length);
-	/**
-	 * Get the name and length of one of the query's captures, or one of the<br>
-	 * query's string literals. Each capture and string is associated with a<br>
-	 * numeric id based on the order that it appeared in the query's source.<br>
-	 * Original signature : <code>char* ts_query_capture_name_for_id(const TSQuery*, uint32_t, uint32_t*)</code><br>
-	 * <i>native declaration : line 878</i>
-	 */
-	Pointer ts_query_capture_name_for_id(TreeSitterLibrary.TSQuery self[], int index, IntBuffer length);
 	/**
 	 * Get the quantifier of the query's captures. Each capture is * associated<br>
 	 * with a numeric id based on the order that it appeared in the query's source.<br>
 	 * Original signature : <code>TSQuantifier ts_query_capture_quantifier_for_id(const TSQuery*, uint32_t, uint32_t)</code><br>
 	 * <i>native declaration : line 888</i><br>
-	 * @deprecated use the safer methods {@link #ts_query_capture_quantifier_for_id(treesitter.TreeSitterLibrary.TSQuery[], int, int)} and {@link #ts_query_capture_quantifier_for_id(treesitter.TreeSitterLibrary.TSQuery, int, int)} instead
 	 */
-	@Deprecated
 	int ts_query_capture_quantifier_for_id(TreeSitterLibrary.TSQuery self, int pattern_index, int capture_index);
-	/**
-	 * Get the quantifier of the query's captures. Each capture is * associated<br>
-	 * with a numeric id based on the order that it appeared in the query's source.<br>
-	 * Original signature : <code>TSQuantifier ts_query_capture_quantifier_for_id(const TSQuery*, uint32_t, uint32_t)</code><br>
-	 * <i>native declaration : line 888</i>
-	 */
-	int ts_query_capture_quantifier_for_id(TreeSitterLibrary.TSQuery self[], int pattern_index, int capture_index);
 	/**
 	 * Original signature : <code>char* ts_query_string_value_for_id(const TSQuery*, uint32_t, uint32_t*)</code><br>
 	 * <i>native declaration : line 894</i><br>
-	 * @deprecated use the safer methods {@link #ts_query_string_value_for_id(treesitter.TreeSitterLibrary.TSQuery[], int, java.nio.IntBuffer)} and {@link #ts_query_string_value_for_id(treesitter.TreeSitterLibrary.TSQuery, int, com.sun.jna.ptr.IntByReference)} instead
 	 */
-	@Deprecated
 	Pointer ts_query_string_value_for_id(TreeSitterLibrary.TSQuery self, int index, IntByReference length);
-	/**
-	 * Original signature : <code>char* ts_query_string_value_for_id(const TSQuery*, uint32_t, uint32_t*)</code><br>
-	 * <i>native declaration : line 894</i>
-	 */
-	Pointer ts_query_string_value_for_id(TreeSitterLibrary.TSQuery self[], int index, IntBuffer length);
-	/**
-	 * Disable a certain capture within a query.<br>
-	 * * This prevents the capture from being returned in matches, and also avoids<br>
-	 * any resource usage associated with recording the capture. Currently, there<br>
-	 * is no way to undo this.<br>
-	 * Original signature : <code>void ts_query_disable_capture(TSQuery*, const char*, uint32_t)</code><br>
-	 * <i>native declaration : line 907</i><br>
-	 * @deprecated use the safer methods {@link #ts_query_disable_capture(treesitter.TreeSitterLibrary.TSQuery, java.lang.String, int)} and {@link #ts_query_disable_capture(treesitter.TreeSitterLibrary.TSQuery, com.sun.jna.Pointer, int)} instead
-	 */
-	@Deprecated
-	void ts_query_disable_capture(TreeSitterLibrary.TSQuery self, Pointer name, int length);
 	/**
 	 * Disable a certain capture within a query.<br>
 	 * * This prevents the capture from being returned in matches, and also avoids<br>
@@ -1241,7 +951,7 @@ public interface TreeSitterLibrary extends Library {
 	 * Original signature : <code>void ts_query_disable_capture(TSQuery*, const char*, uint32_t)</code><br>
 	 * <i>native declaration : line 907</i>
 	 */
-	void ts_query_disable_capture(TreeSitterLibrary.TSQuery self, String name, int length);
+	void ts_query_disable_capture(TreeSitterLibrary.TSQuery self, Pointer name, int length);
 	/**
 	 * Disable a certain pattern within a query.<br>
 	 * * This prevents the pattern from matching and removes most of the overhead<br>
@@ -1427,90 +1137,40 @@ public interface TreeSitterLibrary extends Library {
 	 * Get a node type string for the given numerical id.<br>
 	 * Original signature : <code>char* ts_language_symbol_name(const TSLanguage*, TSSymbol)</code><br>
 	 * <i>native declaration : line 1027</i><br>
-	 * @deprecated use the safer methods {@link #ts_language_symbol_name(treesitter.TreeSitterLibrary.TSLanguage[], short)} and {@link #ts_language_symbol_name(treesitter.TreeSitterLibrary.TSLanguage, short)} instead
 	 */
-	@Deprecated
 	Pointer ts_language_symbol_name(TreeSitterLibrary.TSLanguage self, short symbol);
-	/**
-	 * Get a node type string for the given numerical id.<br>
-	 * Original signature : <code>char* ts_language_symbol_name(const TSLanguage*, TSSymbol)</code><br>
-	 * <i>native declaration : line 1027</i>
-	 */
-	Pointer ts_language_symbol_name(TreeSitterLibrary.TSLanguage self[], short symbol);
 	/**
 	 * Get the numerical id for the given node type string.<br>
 	 * Original signature : <code>TSSymbol ts_language_symbol_for_name(const TSLanguage*, const char*, uint32_t, bool)</code><br>
 	 * <i>native declaration : line 1032</i><br>
-	 * @deprecated use the safer methods {@link #ts_language_symbol_for_name(treesitter.TreeSitterLibrary.TSLanguage[], java.lang.String, int, byte)} and {@link #ts_language_symbol_for_name(treesitter.TreeSitterLibrary.TSLanguage, com.sun.jna.Pointer, int, byte)} instead
 	 */
-	@Deprecated
 	short ts_language_symbol_for_name(TreeSitterLibrary.TSLanguage self, Pointer string, int length, byte is_named);
-	/**
-	 * Get the numerical id for the given node type string.<br>
-	 * Original signature : <code>TSSymbol ts_language_symbol_for_name(const TSLanguage*, const char*, uint32_t, bool)</code><br>
-	 * <i>native declaration : line 1032</i>
-	 */
-	short ts_language_symbol_for_name(TreeSitterLibrary.TSLanguage self[], String string, int length, byte is_named);
 	/**
 	 * Get the number of distinct field names in the language.<br>
 	 * Original signature : <code>uint32_t ts_language_field_count(const TSLanguage*)</code><br>
 	 * <i>native declaration : line 1042</i><br>
-	 * @deprecated use the safer methods {@link #ts_language_field_count(treesitter.TreeSitterLibrary.TSLanguage[])} and {@link #ts_language_field_count(treesitter.TreeSitterLibrary.TSLanguage)} instead
 	 */
-	@Deprecated
 	int ts_language_field_count(TreeSitterLibrary.TSLanguage self);
-	/**
-	 * Get the number of distinct field names in the language.<br>
-	 * Original signature : <code>uint32_t ts_language_field_count(const TSLanguage*)</code><br>
-	 * <i>native declaration : line 1042</i>
-	 */
-	int ts_language_field_count(TreeSitterLibrary.TSLanguage self[]);
 	/**
 	 * Get the field name string for the given numerical id.<br>
 	 * Original signature : <code>char* ts_language_field_name_for_id(const TSLanguage*, TSFieldId)</code><br>
 	 * <i>native declaration : line 1047</i><br>
-	 * @deprecated use the safer methods {@link #ts_language_field_name_for_id(treesitter.TreeSitterLibrary.TSLanguage[], short)} and {@link #ts_language_field_name_for_id(treesitter.TreeSitterLibrary.TSLanguage, short)} instead
 	 */
-	@Deprecated
 	Pointer ts_language_field_name_for_id(TreeSitterLibrary.TSLanguage self, short id);
-	/**
-	 * Get the field name string for the given numerical id.<br>
-	 * Original signature : <code>char* ts_language_field_name_for_id(const TSLanguage*, TSFieldId)</code><br>
-	 * <i>native declaration : line 1047</i>
-	 */
-	Pointer ts_language_field_name_for_id(TreeSitterLibrary.TSLanguage self[], short id);
 	/**
 	 * Get the numerical id for the given field name string.<br>
 	 * Original signature : <code>TSFieldId ts_language_field_id_for_name(const TSLanguage*, const char*, uint32_t)</code><br>
 	 * <i>native declaration : line 1052</i><br>
-	 * @deprecated use the safer methods {@link #ts_language_field_id_for_name(treesitter.TreeSitterLibrary.TSLanguage[], java.lang.String, int)} and {@link #ts_language_field_id_for_name(treesitter.TreeSitterLibrary.TSLanguage, com.sun.jna.Pointer, int)} instead
 	 */
-	@Deprecated
 	short ts_language_field_id_for_name(TreeSitterLibrary.TSLanguage self, Pointer name, int name_length);
-	/**
-	 * Get the numerical id for the given field name string.<br>
-	 * Original signature : <code>TSFieldId ts_language_field_id_for_name(const TSLanguage*, const char*, uint32_t)</code><br>
-	 * <i>native declaration : line 1052</i>
-	 */
-	short ts_language_field_id_for_name(TreeSitterLibrary.TSLanguage self[], String name, int name_length);
 	/**
 	 * Check whether the given node type id belongs to named nodes, anonymous nodes,<br>
 	 * or a hidden nodes.<br>
 	 * * See also [`ts_node_is_named`]. Hidden nodes are never returned from the API.<br>
 	 * Original signature : <code>TSSymbolType ts_language_symbol_type(const TSLanguage*, TSSymbol)</code><br>
 	 * <i>native declaration : line 1060</i><br>
-	 * @deprecated use the safer methods {@link #ts_language_symbol_type(treesitter.TreeSitterLibrary.TSLanguage[], short)} and {@link #ts_language_symbol_type(treesitter.TreeSitterLibrary.TSLanguage, short)} instead
 	 */
-	@Deprecated
 	int ts_language_symbol_type(TreeSitterLibrary.TSLanguage self, short symbol);
-	/**
-	 * Check whether the given node type id belongs to named nodes, anonymous nodes,<br>
-	 * or a hidden nodes.<br>
-	 * * See also [`ts_node_is_named`]. Hidden nodes are never returned from the API.<br>
-	 * Original signature : <code>TSSymbolType ts_language_symbol_type(const TSLanguage*, TSSymbol)</code><br>
-	 * <i>native declaration : line 1060</i>
-	 */
-	int ts_language_symbol_type(TreeSitterLibrary.TSLanguage self[], short symbol);
 	/**
 	 * Get the ABI version number for this language. This version number is used<br>
 	 * to ensure that languages were generated by a compatible version of<br>
@@ -1518,19 +1178,8 @@ public interface TreeSitterLibrary extends Library {
 	 * * See also [`ts_parser_set_language`].<br>
 	 * Original signature : <code>uint32_t ts_language_version(const TSLanguage*)</code><br>
 	 * <i>native declaration : line 1069</i><br>
-	 * @deprecated use the safer methods {@link #ts_language_version(treesitter.TreeSitterLibrary.TSLanguage[])} and {@link #ts_language_version(treesitter.TreeSitterLibrary.TSLanguage)} instead
 	 */
-	@Deprecated
 	int ts_language_version(TreeSitterLibrary.TSLanguage self);
-	/**
-	 * Get the ABI version number for this language. This version number is used<br>
-	 * to ensure that languages were generated by a compatible version of<br>
-	 * Tree-sitter.<br>
-	 * * See also [`ts_parser_set_language`].<br>
-	 * Original signature : <code>uint32_t ts_language_version(const TSLanguage*)</code><br>
-	 * <i>native declaration : line 1069</i>
-	 */
-	int ts_language_version(TreeSitterLibrary.TSLanguage self[]);
 	/**
 	 * Get the next parse state. Combine this with lookahead iterators to generate<br>
 	 * completion suggestions or valid symbols in error nodes. Use<br>
@@ -1664,120 +1313,7 @@ public interface TreeSitterLibrary extends Library {
 	 * <i>native declaration : line 1141</i>
 	 */
 	Pointer ts_lookahead_iterator_current_symbol_name(TreeSitterLibrary.TSLookaheadIterator self[]);
-	/**
-	 * Create a Wasm store.<br>
-	 * Original signature : <code>TSWasmStore* ts_wasm_store_new(TSWasmEngine*, TSWasmError*)</code><br>
-	 * <i>native declaration : line 1166</i><br>
-	 * @deprecated use the safer method {@link #ts_wasm_store_new(com.sun.jna.ptr.PointerByReference, treesitter.TSWasmError)} instead
-	 */
-	@Deprecated
-	PointerByReference ts_wasm_store_new(Pointer engine, TSWasmError error);
-	/**
-	 * Create a Wasm store.<br>
-	 * Original signature : <code>TSWasmStore* ts_wasm_store_new(TSWasmEngine*, TSWasmError*)</code><br>
-	 * <i>native declaration : line 1166</i>
-	 */
-	PointerByReference ts_wasm_store_new(PointerByReference engine, TSWasmError error);
-	/**
-	 * Free the memory associated with the given Wasm store.<br>
-	 * Original signature : <code>void ts_wasm_store_delete(TSWasmStore*)</code><br>
-	 * <i>native declaration : line 1174</i><br>
-	 * @deprecated use the safer method {@link #ts_wasm_store_delete(com.sun.jna.ptr.PointerByReference)} instead
-	 */
-	@Deprecated
-	void ts_wasm_store_delete(Pointer TSWasmStorePtr1);
-	/**
-	 * Free the memory associated with the given Wasm store.<br>
-	 * Original signature : <code>void ts_wasm_store_delete(TSWasmStore*)</code><br>
-	 * <i>native declaration : line 1174</i>
-	 */
-	void ts_wasm_store_delete(PointerByReference TSWasmStorePtr1);
-	/**
-	 * Create a language from a buffer of Wasm. The resulting language behaves<br>
-	 * like any other Tree-sitter language, except that in order to use it with<br>
-	 * a parser, that parser must have a Wasm store. Note that the language<br>
-	 * can be used with any Wasm store, it doesn't need to be the same store that<br>
-	 * was used to originally load it.<br>
-	 * Original signature : <code>TSLanguage* ts_wasm_store_load_language(TSWasmStore*, const char*, const char*, uint32_t, TSWasmError*)</code><br>
-	 * <i>native declaration : line 1183</i><br>
-	 * @deprecated use the safer methods {@link #ts_wasm_store_load_language(com.sun.jna.ptr.PointerByReference, java.lang.String, java.lang.String, int, treesitter.TSWasmError)} and {@link #ts_wasm_store_load_language(com.sun.jna.ptr.PointerByReference, com.sun.jna.Pointer, com.sun.jna.Pointer, int, treesitter.TSWasmError)} instead
-	 */
-	@Deprecated
-	TreeSitterLibrary.TSLanguage ts_wasm_store_load_language(Pointer TSWasmStorePtr1, Pointer name, Pointer wasm, int wasm_len, TSWasmError error);
-	/**
-	 * Create a language from a buffer of Wasm. The resulting language behaves<br>
-	 * like any other Tree-sitter language, except that in order to use it with<br>
-	 * a parser, that parser must have a Wasm store. Note that the language<br>
-	 * can be used with any Wasm store, it doesn't need to be the same store that<br>
-	 * was used to originally load it.<br>
-	 * Original signature : <code>TSLanguage* ts_wasm_store_load_language(TSWasmStore*, const char*, const char*, uint32_t, TSWasmError*)</code><br>
-	 * <i>native declaration : line 1183</i>
-	 */
-	TreeSitterLibrary.TSLanguage ts_wasm_store_load_language(PointerByReference TSWasmStorePtr1, String name, String wasm, int wasm_len, TSWasmError error);
-	/**
-	 * Create a language from a buffer of Wasm. The resulting language behaves<br>
-	 * like any other Tree-sitter language, except that in order to use it with<br>
-	 * a parser, that parser must have a Wasm store. Note that the language<br>
-	 * can be used with any Wasm store, it doesn't need to be the same store that<br>
-	 * was used to originally load it.<br>
-	 * Original signature : <code>TSLanguage* ts_wasm_store_load_language(TSWasmStore*, const char*, const char*, uint32_t, TSWasmError*)</code><br>
-	 * <i>native declaration : line 1183</i>
-	 */
-	TreeSitterLibrary.TSLanguage ts_wasm_store_load_language(PointerByReference TSWasmStorePtr1, Pointer name, Pointer wasm, int wasm_len, TSWasmError error);
-	/**
-	 * Check if the language came from a Wasm module. If so, then in order to use<br>
-	 * this langauge with a Parser, that parser must have a Wasm store assigned.<br>
-	 * Original signature : <code>bool ts_language_is_wasm(const TSLanguage*)</code><br>
-	 * <i>native declaration : line 1195</i><br>
-	 * @deprecated use the safer methods {@link #ts_language_is_wasm(treesitter.TreeSitterLibrary.TSLanguage[])} and {@link #ts_language_is_wasm(treesitter.TreeSitterLibrary.TSLanguage)} instead
-	 */
-	@Deprecated
-	byte ts_language_is_wasm(TreeSitterLibrary.TSLanguage TSLanguagePtr1);
-	/**
-	 * Check if the language came from a Wasm module. If so, then in order to use<br>
-	 * this langauge with a Parser, that parser must have a Wasm store assigned.<br>
-	 * Original signature : <code>bool ts_language_is_wasm(const TSLanguage*)</code><br>
-	 * <i>native declaration : line 1195</i>
-	 */
-	byte ts_language_is_wasm(TreeSitterLibrary.TSLanguage TSLanguagePtr1[]);
-	/**
-	 * Assign the given Wasm store to the parser. A parser must have a Wasm store<br>
-	 * in order to use Wasm languages.<br>
-	 * Original signature : <code>void ts_parser_set_wasm_store(TSParser*, TSWasmStore*)</code><br>
-	 * <i>native declaration : line 1201</i><br>
-	 * @deprecated use the safer method {@link #ts_parser_set_wasm_store(treesitter.TreeSitterLibrary.TSParser, com.sun.jna.ptr.PointerByReference)} instead
-	 */
-	@Deprecated
-	void ts_parser_set_wasm_store(TreeSitterLibrary.TSParser TSParserPtr1, Pointer TSWasmStorePtr1);
-	/**
-	 * Assign the given Wasm store to the parser. A parser must have a Wasm store<br>
-	 * in order to use Wasm languages.<br>
-	 * Original signature : <code>void ts_parser_set_wasm_store(TSParser*, TSWasmStore*)</code><br>
-	 * <i>native declaration : line 1201</i>
-	 */
-	void ts_parser_set_wasm_store(TreeSitterLibrary.TSParser TSParserPtr1, PointerByReference TSWasmStorePtr1);
-	/**
-	 * Remove the parser's current Wasm store and return it. This returns NULL if<br>
-	 * the parser doesn't have a Wasm store.<br>
-	 * Original signature : <code>TSWasmStore* ts_parser_take_wasm_store(TSParser*)</code><br>
-	 * <i>native declaration : line 1207</i>
-	 */
-	PointerByReference ts_parser_take_wasm_store(TreeSitterLibrary.TSParser TSParserPtr1);
-	/**
-	 * Set the allocation functions used by the library.<br>
-	 * * By default, Tree-sitter uses the standard libc allocation functions,<br>
-	 * but aborts the process when an allocation fails. This function lets<br>
-	 * you supply alternative allocation functions at runtime.<br>
-	 * * If you pass `NULL` for any parameter, Tree-sitter will switch back to<br>
-	 * its default implementation of that function.<br>
-	 * * If you call this function after the library has already been used, then<br>
-	 * you must ensure that either:<br>
-	 *  1. All the existing objects have been freed.<br>
-	 *  2. The new allocator shares its state with the old one, so it is capable<br>
-	 *     of freeing memory that was allocated by the old allocator.<br>
-	 * Original signature : <code>void ts_set_allocator(ts_set_allocator_new_malloc_callback*, ts_set_allocator_new_calloc_callback*, ts_set_allocator_new_realloc_callback*, ts_set_allocator_new_free_callback*)</code><br>
-	 * <i>native declaration : line 1229</i>
-	 */
+
 	void ts_set_allocator(TreeSitterLibrary.ts_set_allocator_new_malloc_callback new_malloc, TreeSitterLibrary.ts_set_allocator_new_calloc_callback new_calloc, TreeSitterLibrary.ts_set_allocator_new_realloc_callback new_realloc, TreeSitterLibrary.ts_set_allocator_new_free_callback new_free);
 	public static class TSQuery extends PointerType {
 		public TSQuery(Pointer address) {

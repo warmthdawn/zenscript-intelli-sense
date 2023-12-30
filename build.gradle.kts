@@ -58,6 +58,7 @@ subprojects {
         include("slf4j-api-*.jar")
         include("slf4j-simple-*.jar")
     }
+
 }
 
 // root project

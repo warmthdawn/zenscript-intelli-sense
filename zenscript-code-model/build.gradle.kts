@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id ("antlr")
 }
@@ -6,6 +8,7 @@ group = "raylras.zen.model"
 
 dependencies {
     antlr("org.antlr:antlr4:4.13.1")
+    implementation("net.java.dev.jna:jna:5.14.0")
     implementation ("org.antlr:antlr4-runtime:4.13.1")
     implementation ("org.eclipse.lsp4j:org.eclipse.lsp4j:0.21.1")
 }
@@ -20,9 +23,14 @@ tasks.named<AntlrTask>("generateGrammarSource") {
     outputDirectory = file("src/main/gen/java/raylras/zen/model/parser")
 }
 
+tasks.named<KotlinCompile>("compileKotlin") {
+    dependsOn("generateGrammarSource")
+}
+
 tasks.named<Copy>("distDeps") {
     include("antlr4-runtime-*.jar")
     include("org.eclipse.lsp4j-*.jar")
+    include("jna-*.jar")
 }
 
 tasks.register<Delete>("cleanGen") {

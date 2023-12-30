@@ -1,7 +1,8 @@
 package treesitter;
-import com.sun.jna.Callback;
+
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
+
 import java.util.Arrays;
 import java.util.List;
 /**
@@ -9,33 +10,34 @@ import java.util.List;
  * a tool written by <a href="http://ochafik.com/">Olivier Chafik</a> that <a href="http://code.google.com/p/jnaerator/wiki/CreditsAndLicense">uses a few opensource projects.</a>.<br>
  * For help, please visit <a href="http://nativelibs4java.googlecode.com/">NativeLibs4Java</a> , <a href="http://rococoa.dev.java.net/">Rococoa</a>, or <a href="http://jna.dev.java.net/">JNA</a>.
  */
-public class TSLogger extends Structure {
-	/** C type : void* */
-	public Pointer payload;
-	/** C type : log_callback* */
-	public TSLogger.log_callback log;
-	public interface log_callback extends Callback {
-		void apply(Pointer payload, int log_type, Pointer buffer);
-	};
-	public TSLogger() {
+public class TSWasmError extends Structure {
+	/**
+	 * @see TSWasmErrorKind<br>
+	 * C type : TSWasmErrorKind
+	 */
+	public int kind;
+	/** C type : char* */
+	public Pointer message;
+	public TSWasmError() {
 		super();
 	}
 	protected List<String> getFieldOrder(){
-		return Arrays.asList("payload", "log");
+		return Arrays.asList("kind", "message");
 	}
 	/**
-	 * @param payload C type : void*<br>
-	 * @param log C type : log_callback*
+	 * @param kind @see TSWasmErrorKind<br>
+	 * C type : TSWasmErrorKind<br>
+	 * @param message C type : char*
 	 */
-	public TSLogger(Pointer payload, TSLogger.log_callback log) {
+	public TSWasmError(int kind, Pointer message) {
 		super();
-		this.payload = payload;
-		this.log = log;
+		this.kind = kind;
+		this.message = message;
 	}
-	public static class ByReference extends TSLogger implements Structure.ByReference {
+	public static class ByReference extends TSWasmError implements Structure.ByReference {
 		
 	};
-	public static class ByValue extends TSLogger implements Structure.ByValue {
+	public static class ByValue extends TSWasmError implements Structure.ByValue {
 		
 	};
 }

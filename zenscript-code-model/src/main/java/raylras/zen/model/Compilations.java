@@ -1,12 +1,11 @@
 package raylras.zen.model;
 
-import ai.serenade.treesitter.Languages;
-import ai.serenade.treesitter.Parser;
-import ai.serenade.treesitter.Tree;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTree;
+import raylas.zen.treesitter.Language;
+import raylas.zen.treesitter.Parser;
 import raylras.zen.model.parser.ZenScriptLexer;
 import raylras.zen.model.parser.ZenScriptParser;
 import raylras.zen.model.resolve.DeclarationResolver;
@@ -14,14 +13,11 @@ import raylras.zen.model.scope.Scope;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class Compilations {
@@ -76,7 +72,7 @@ public class Compilations {
     public static void load(CompilationUnit unit) {
         try {
             load(unit, CharStreams.fromPath(unit.getPath()));
-            unit.setTsParseTree(parser.parseString(Files.readString(unit.getPath())));
+            unit.setTsParseTree(parser.parse(Files.readString(unit.getPath()), null));
         } catch (IOException e) {
             throw new RuntimeException("Failed to load unit: " + unit, e);
         }
@@ -84,23 +80,12 @@ public class Compilations {
 
     public static void load(CompilationUnit unit, String source) {
         load(unit, CharStreams.fromString(source, unit.getPath().toString()));
-
-        try {
-            unit.setTsParseTree(parser.parseString(source));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Failed to parse ts tree unit: " + unit, e);
-        }
+        unit.setTsParseTree(parser.parse(source, null));
     }
 
     /* Private Methods */
 
-    private static Parser parser;
-    static {
-        parser = new Parser();
-        parser.setLanguage(Languages.zenscript());
-
-        System.loadLibrary("tree-sitter-zenscript");
-    }
+    private static raylas.zen.treesitter.Parser parser = new Parser(Language.Companion.getZenScript(), true);
 
     private static void load(CompilationUnit unit, CharStream charStream) {
         unit.clear();
